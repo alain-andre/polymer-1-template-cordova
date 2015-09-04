@@ -19,6 +19,7 @@ var reload = browserSync.reload;
 var merge = require('merge-stream');
 var path = require('path');
 var fs = require('fs');
+var shell = require('gulp-shell'); // https://www.npmjs.com/package/gulp-shell
 var glob = require('glob');
 var historyApiFallback = require('connect-history-api-fallback');
 
@@ -190,7 +191,7 @@ gulp.task('serve', ['styles', 'elements', 'images'], function () {
         }
       }
     },
-    // Run as an https by uncommenting 'https: true'
+    // shell as an https by uncommenting 'https: true'
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
     // https: true,
@@ -223,7 +224,7 @@ gulp.task('serve:dist', ['default'], function () {
         }
       }
     },
-    // Run as an https by uncommenting 'https: true'
+    // run as an https by uncommenting 'https: true'
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
     // https: true,
@@ -242,6 +243,38 @@ gulp.task('default', ['clean'], function (cb) {
     cb);
     // Note: add , 'precache' , after 'vulcanize', if your are going to use Service Worker
 });
+
+// Netoyage de Cordova
+gulp.task('cordova_clean', shell.task('rm -Rf cordova'));
+
+// Création de Cordova
+gulp.task('cordova_create', shell.task('cordova create cordova com.winegame.cordova "Winegame" --copy-from=dist'));
+
+// Ajout de la plate-forme IOS pour Cordova
+gulp.task('cordova_platform_ios', shell.task('cordova platform add ios', {cwd: 'cordova'}));
+
+// Ajout de la plate-forme android pour Cordova
+gulp.task('cordova_platform_android', shell.task('cordova platform add android', {cwd: 'cordova'}));
+
+// Prepare Cordova
+gulp.task('cordova_prepare', shell.task('cordova prepare', {cwd: 'cordova'}));
+
+// Génère la partie Cordova
+gulp.task('cordova', ['default'], function (cb) {
+  runSequence(
+    'cordova_clean',
+    'cordova_create',
+    'cordova_platform_android',
+    'cordova_platform_ios',
+    'cordova_prepare',
+    cb);
+});
+
+// Émule l'application pour android
+gulp.task('cordova:emulate:android', shell.task('cordova emulate android', {cwd: 'cordova'}));
+
+// Émule l'application pour ios
+gulp.task('cordova:emulate:ios', shell.task('cordova emulate android', {cwd: 'cordova'}));
 
 // Load tasks for web-component-tester
 // Adds tasks for `gulp test:local` and `gulp test:remote`
