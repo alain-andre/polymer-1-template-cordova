@@ -92,7 +92,11 @@ gulp.task('copy', function () {
   }).pipe(gulp.dest('dist'));
 
   var bower = gulp.src([
-    'bower_components/**/*'
+    'bower_components/**/*.js',
+    'bower_components/**/*.css',
+    'bower_components/**/*.html',
+    '!bower_components/**/test/*',
+    '!bower_components/**/demo/*'
   ]).pipe(gulp.dest('dist/bower_components'));
 
   var elements = gulp.src(['app/elements/**/*.html'])
@@ -270,11 +274,27 @@ gulp.task('cordova', ['default'], function (cb) {
     cb);
 });
 
+// Nettoie le repertoire www de cordova
+gulp.task('cordova:build:clean_www', shell.task('rm -Rf cordova/www/*'));
+
+// Copie le dossier dist dans le www de cordova
+gulp.task('cordova:build:refresh', ['cordova:build:clean_www'], function(){
+  var app = gulp.src([
+    'dist/**'
+  ]).pipe(gulp.dest('cordova/www'));
+});
+
+// Génere le build cordova pour android
+gulp.task('cordova:build:android', ['cordova:build:refresh'], shell.task('cordova build android', {cwd: 'cordova'}));
+
+// Génere le build cordova pour ios
+gulp.task('cordova:build:ios', ['cordova:build:refresh'], shell.task('cordova build ios', {cwd: 'cordova'}));
+
 // Émule l'application pour android
-gulp.task('cordova:emulate:android', shell.task('cordova emulate android', {cwd: 'cordova'}));
+gulp.task('cordova:emulate:android', ['cordova:build:android'], shell.task('cordova emulate android', {cwd: 'cordova'}));
 
 // Émule l'application pour ios
-gulp.task('cordova:emulate:ios', shell.task('cordova emulate android', {cwd: 'cordova'}));
+gulp.task('cordova:emulate:ios', ['cordova:build:ios'], shell.task('cordova emulate android', {cwd: 'cordova'}));
 
 // Load tasks for web-component-tester
 // Adds tasks for `gulp test:local` and `gulp test:remote`
