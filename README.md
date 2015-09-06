@@ -1,7 +1,6 @@
-![](https://cloud.githubusercontent.com/assets/110953/7877439/6a69d03e-0590-11e5-9fac-c614246606de.png)
-## Polymer Starter Kit
+## Polymer Starter Kit for Cordova
 
-> A starting point for building web applications with Polymer 1.0
+> A starting point for building web applications with Polymer 1.0 and Cordova.
 
 ### Included out of the box:
 
@@ -99,6 +98,21 @@ gulp
 ```
 
 Build and optimize the current project, ready for deployment. This includes linting as well as vulcanization, image, script, stylesheet and HTML optimization and minification.
+
+#### Cordova
+
+1) Create cordova application part.
+
+```sh
+gulp cordova
+```
+
+2) Emulate cordova app.
+Replace :platform by :ios or :android depending your platform.
+
+```sh
+cordova:emulate:platform
+```
 
 ## Application Theming
 
