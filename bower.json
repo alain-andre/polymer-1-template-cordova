@@ -1,5 +1,5 @@
 {
-  "name": "winegame",
+  "name": "polymer-1-template-cordova",
   "private": true,
   "dependencies": {
     "iron-elements": "PolymerElements/iron-elements#1.0.0",
