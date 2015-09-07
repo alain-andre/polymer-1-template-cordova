@@ -111,7 +111,7 @@ gulp cordova
 Replace :platform by :ios or :android depending your platform.
 
 ```sh
-cordova:emulate:platform
+gulp cordova:emulate:platform
 ```
 
 ## Application Theming
